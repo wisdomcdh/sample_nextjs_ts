@@ -1,0 +1,49 @@
+{
+  "name": "nextjs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "local": "cross-env SERVER_MODE=local next",
+    "localdev": "cross-env SERVER_MODE=localdev next",
+    "dev": "next",
+    "build": "next build",
+    "build:dev": "npm run clean && cross-env NODE_ENV=development SERVER_MODE=dev npm run build && npm run pack:prd",
+    "build:stg": "npm run clean && cross-env NODE_ENV=production SERVER_MODE=stg npm run build && npm run pack:prd",
+    "build:prd": "npm run clean && cross-env NODE_ENV=production SERVER_MODE=prd npm run build && npm run pack:prd",
+    "start": "next start",
+    "clean": "rm -r -f .next .build",
+    "pack:prd": "mkdir .build && npm run pack:init:source && npm run pack:init:package && npm run pack:init:module",
+    "pack:init:source": "cd .build && mkdir source && cd .. && cp -rp .next .build/source && cp -rp public .build/source",
+    "pack:init:package": "cat package.json | jq \". | {name: .name, private: true, version: .version, scripts: {start: .scripts.start}, dependencies: .dependencies}\" > .build/source/package.json",
+    "pack:init:module": "cd .build/source && npm i",
+    "postpack:prd": "cd .build/source && tar -zcf ../package.tar.gz .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@reduxjs/toolkit": "^1.5.0",
+    "axios": "^0.21.0",
+    "formik": "^2.2.6",
+    "next": "^10.0.3",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-redux": "^7.2.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.9",
+    "@babel/node": "^7.12.6",
+    "@babel/preset-env": "^7.12.7",
+    "@types/classnames": "^2.2.11",
+    "@types/node": "^14.14.14",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "@types/react-redux": "^7.1.12",
+    "axios-mock-adapter": "^1.19.0",
+    "copy-webpack-plugin": "^6.4.0",
+    "cross-env": "^7.0.3",
+    "typescript": "^4.1.3"
+  }
+}
